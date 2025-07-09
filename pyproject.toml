@@ -1,0 +1,26 @@
+[project]
+name = "cigarbox-ai"
+version = "0.1.0"
+description = "AI research project for CigarBox solutions"
+dependencies = [
+    "numpy",
+    "pandas",
+    "requests",
+    "matplotlib",
+    "seaborn",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "ruff",
+    "jupyter",
+    "ipython",
+]
+ml = [
+    "scikit-learn",
+    "torch",
+    "transformers",
+    "datasets",
+]
