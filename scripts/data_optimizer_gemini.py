@@ -3,6 +3,15 @@ import sys
 from pathlib import Path
 from typing import Dict, Any, List
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+load_dotenv()
+data_path = os.getenv('DATA_PATH')
+if data_path:
+    os.chdir(data_path)
+else:
+    print("ERROR: DATA_PATH not set in .env!")
+    exit(1)
 
 class GeminiFlashDataOptimizer:
     """
@@ -360,14 +369,15 @@ Focus op:
 
 def main():
     """Main function"""
-    if len(sys.argv) != 3:
-        print("Usage: python gemini_optimizer.py <comprehensive_data_file> <output_directory>")
-        print("Example: python gemini_optimizer.py './results/comprehensive_survey_data.json' './gemini_ready/'")
+    input_file = os.getenv('DATA_PATH')
+    output_dir = os.getenv('DATA_PATH')
+    if len(sys.argv) > 1:
+        input_file = sys.argv[1]
+    if len(sys.argv) > 2:
+        output_dir = sys.argv[2]
+    if not input_file or not output_dir:
+        print("ERROR: DATA_PATH not set in .env and no file/dir provided!")
         return
-    
-    input_file = sys.argv[1]
-    output_dir = sys.argv[2]
-    
     if not Path(input_file).exists():
         print(f"ERROR: Input file '{input_file}' does not exist!")
         return

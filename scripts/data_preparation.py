@@ -8,6 +8,14 @@ import re
 import sys
 import glob
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
+data_path = os.getenv('DATA_PATH')
+if data_path:
+    os.chdir(data_path)
+else:
+    print("ERROR: DATA_PATH not set in .env!")
+    exit(1)
 
 class UniversalCigarBoxPreprocessor:
     """
@@ -664,42 +672,31 @@ class UniversalCigarBoxPreprocessor:
 
 def main():
     """Main function with WSL-compatible path handling"""
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <data_directory>")
-        print("Example: python script.py '/mnt/c/Users/Diederik/Documents/AI Projects/CigarBox/data/Rotterdam Bluegrass Festival'")
-        print("Results will be saved to: <data_directory>/results/")
+    data_dir = os.getenv('DATA_PATH')
+    if len(sys.argv) > 1:
+        data_dir = sys.argv[1]
+    if not data_dir:
+        print("ERROR: DATA_PATH not set in .env and no directory provided!")
         return
-    
-    data_dir = sys.argv[1]
-    
-    # Create output directory as "results" inside data directory
-    output_dir = str(Path(data_dir) / "results")
-    
+    output_dir = "results"
     print("Starting Universal CigarBox Data Preprocessing...")
     print(f"WSL Environment Detected")
     print(f"Data directory: {data_dir}")
     print(f"Output directory: {output_dir}")
-    
-    # WSL path conversion if needed
     if data_dir.startswith('C:\\'):
         data_dir = data_dir.replace('C:\\', '/mnt/c/').replace('\\', '/')
         output_dir = str(Path(data_dir) / "results")
         print(f"Converted to WSL path: {data_dir}")
-    
     if not os.path.exists(data_dir):
         print(f"ERROR: Data directory '{data_dir}' does not exist!")
         return
-    
     try:
-        # Process with universal preprocessor
         preprocessor = UniversalCigarBoxPreprocessor(data_dir, output_dir)
         processed_data = preprocessor.process_all_data()
         preprocessor.save_processed_data(processed_data)
-        
         print("\nUniversal preprocessing successful!")
         print("Ready for any LLM API (Google Gemini, OpenAI, etc.)")
         print("All original data preserved and structured")
-        
     except Exception as e:
         print(f"ERROR: {e}")
         import traceback
