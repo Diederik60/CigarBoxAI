@@ -81,20 +81,82 @@ ANTWOORD:"""
         RED = '\033[91m'
         BOLD = '\033[1m'
         UNDERLINE = '\033[4m'
+        CYAN = '\033[96m'
+        MAGENTA = '\033[95m'
         END = '\033[0m'
+        
+        # Format the answer with better structure
+        formatted_answer = self.format_answer_content(answer)
         
         # Create formatted output
         output = f"""
-{BLUE}{'='*60}{END}
+{BLUE}{'='*70}{END}
 {BOLD}{UNDERLINE}VRAAG:{END} {question}
-{BLUE}{'='*60}{END}
+{BLUE}{'='*70}{END}
 
 {GREEN}{BOLD}ANTWOORD:{END}
-{YELLOW}{'─'*40}{END}
-{answer}
-{YELLOW}{'─'*40}{END}
+{YELLOW}{'─'*70}{END}
+{formatted_answer}
+{YELLOW}{'─'*70}{END}
 """
         return output
+    
+    def format_answer_content(self, answer: str) -> str:
+        """Format the answer content with better headings and structure"""
+        # Terminal colors
+        BLUE = '\033[94m'
+        GREEN = '\033[92m'
+        YELLOW = '\033[93m'
+        RED = '\033[91m'
+        BOLD = '\033[1m'
+        UNDERLINE = '\033[4m'
+        CYAN = '\033[96m'
+        MAGENTA = '\033[95m'
+        END = '\033[0m'
+        
+        lines = answer.split('\n')
+        formatted_lines = []
+        
+        for line in lines:
+            stripped = line.strip()
+            
+            # Skip empty lines but preserve spacing
+            if not stripped:
+                formatted_lines.append('')
+                continue
+            
+            # Format main headings (lines that end with colon and are standalone)
+            if stripped.endswith(':') and len(stripped) > 10 and '**' not in stripped:
+                formatted_lines.append(f"{CYAN}{BOLD}{UNDERLINE}{stripped}{END}")
+                continue
+            
+            # Format bold sections **text**
+            if '**' in stripped:
+                # Replace **text** with colored bold text
+                import re
+                formatted_line = re.sub(r'\*\*(.*?)\*\*', f'{MAGENTA}{BOLD}\\1{END}', stripped)
+                formatted_lines.append(formatted_line)
+                continue
+            
+            # Format bullet points
+            if stripped.startswith('*'):
+                formatted_lines.append(f"  {GREEN}•{END} {stripped[1:].strip()}")
+                continue
+            
+            # Format numbered items or percentages
+            if any(char.isdigit() for char in stripped[:10]) and ('%' in stripped or stripped[0].isdigit()):
+                formatted_lines.append(f"  {YELLOW}▶{END} {stripped}")
+                continue
+            
+            # Format conclusion or important statements
+            if any(keyword in stripped.lower() for keyword in ['conclusie', 'samenvatting', 'belangrijkste', 'opvallend']):
+                formatted_lines.append(f"{RED}{BOLD}🔍 {stripped}{END}")
+                continue
+            
+            # Regular text
+            formatted_lines.append(stripped)
+        
+        return '\n'.join(formatted_lines)
     
     def generate_html_report(self) -> str:
         """Generate HTML report of the conversation"""
@@ -251,9 +313,13 @@ ANTWOORD:"""
             html_content = self.generate_html_report()
             print(f"HTML content generated: {len(html_content)} characters")
             
-            # Save to current directory with timestamp
+            # Create reports directory structure
+            reports_dir = Path("Rotterdam Bluegrass Festival/reports")
+            reports_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Save to reports directory with timestamp
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            html_file = f"cigarbox_report_{timestamp}.html"
+            html_file = reports_dir / f"cigarbox_report_{timestamp}.html"
             
             print(f"Saving to: {html_file}")
             print(f"Current directory: {os.getcwd()}")
@@ -262,8 +328,8 @@ ANTWOORD:"""
                 f.write(html_content)
             
             # Check if file was created
-            if os.path.exists(html_file):
-                file_size = os.path.getsize(html_file)
+            if html_file.exists():
+                file_size = html_file.stat().st_size
                 print(f"File created successfully: {html_file} ({file_size} bytes)")
             else:
                 print(f"ERROR: File was not created!")
@@ -274,23 +340,37 @@ ANTWOORD:"""
                 # For WSL, try different approaches
                 if os.path.exists('/mnt/c'):  # WSL detected
                     print("WSL detected, converting path...")
-                    # Convert to Windows path
-                    current_dir = os.getcwd()
-                    windows_path = current_dir.replace('/mnt/c', 'C:').replace('/', '\\')
-                    full_windows_path = f"{windows_path}\\{html_file}"
                     
-                    print(f"Windows path: {full_windows_path}")
+                    # Get absolute path and convert to WSL format for browser
+                    abs_path = html_file.resolve()
+                    wsl_path = f"\\\\wsl.localhost\\Ubuntu-22.04{abs_path}"
                     
-                    # Try to open with Windows default browser
-                    os.system(f'cmd.exe /c start "" "{full_windows_path}"')
-                    print(f"HTML rapport geopend in je browser!")
+                    print(f"WSL path: {wsl_path}")
+                    
+                    # Try to open with Windows default browser using WSL path
+                    import subprocess
+                    try:
+                        # Use explorer.exe to open the file with default browser
+                        subprocess.run(['explorer.exe', str(abs_path)], check=True)
+                        print(f"HTML rapport geopend in je browser!")
+                    except:
+                        # Fallback: try cmd.exe with different approach
+                        try:
+                            subprocess.run(['cmd.exe', '/c', 'start', '', f'"{wsl_path}"'], check=True)
+                            print(f"HTML rapport geopend in je browser!")
+                        except:
+                            print(f"Automatisch openen mislukt. Open handmatig:")
+                            print(f"In Windows Explorer: {wsl_path}")
+                            print(f"Of type in Windows: \\\\wsl.localhost\\Ubuntu-22.04{abs_path}")
+                    
                     print(f"Bestand opgeslagen als: {html_file}")
-                    print(f"Windows pad: {full_windows_path}")
+                    print(f"WSL pad: {wsl_path}")
                 else:
                     # Regular Linux/Mac
-                    webbrowser.open(f'file://{os.path.abspath(html_file)}')
+                    webbrowser.open(f'file://{html_file.resolve()}')
                     print(f"HTML rapport geopend in je browser!")
-                    print(f"Bestand opgeslagen als: {os.path.abspath(html_file)}")
+                    print(f"Bestand opgeslagen als: {html_file.resolve()}")
+                    
             except Exception as e:
                 print(f"HTML rapport gegenereerd!")
                 print(f"Bestand opgeslagen als: {html_file}")
