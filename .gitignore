@@ -1,0 +1,125 @@
+# CigarBox AI - Sensitive Data Protection
+# =====================================
+
+# SENSITIVE DATA FILES - NEVER COMMIT THESE!
+# -------------------------------------------
+
+# Original data files
+projecten_*.xlsx
+responses_*.xlsx
+*_responses.xlsx
+*_projecten.xlsx
+
+# PDF factsheets (may contain sensitive info)
+*.pdf
+factsheet_*.pdf
+*_factsheet.pdf
+
+# Processed data outputs
+processed_data/
+output/
+data_exports/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# CSV files with survey data
+*_survey_data.csv
+*_responses.csv
+*_participants.csv
+
+# JSON files with processed data
+processed_data.json
+validation_data.json
+*_data.json
+survey_*.json
+
+# Log files (may contain sensitive info)
+*.log
+logs/
+cigarbox_*.log
+
+# Configuration files with API keys
+.env
+.env.local
+.env.production
+config.json
+secrets.json
+
+# Backup files
+*.backup
+*.bak
+backup_*/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.temp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Python specific
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# EXAMPLE DATA (safe to commit)
+# -----------------------------
+# Uncomment these if you want to include example/demo data
+# !example_data/
+# !demo_*.xlsx
+# !sample_responses.csv

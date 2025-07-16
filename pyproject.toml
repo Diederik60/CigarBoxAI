@@ -8,6 +8,9 @@ dependencies = [
     "requests",
     "matplotlib",
     "seaborn",
+    "google-genai>=1.25.0",
+    "openpyxl>=3.1.5",
+    "pypdf2>=3.0.1",
 ]
 
 [project.optional-dependencies]
