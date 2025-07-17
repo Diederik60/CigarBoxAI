@@ -1,0 +1,30 @@
+{
+  "example_usage_scenarios": {
+    "music_festival": {
+      "input": "Festival survey with 200+ questions about experience, satisfaction, demographics",
+      "processing": "Automatically identifies key demographics, satisfaction, motivation columns",
+      "output": "Optimized data focusing on visitor experience and festival impact"
+    },
+    "museum_exhibition": {
+      "input": "Exhibition visitor survey with learning outcomes, engagement metrics",
+      "processing": "Adapts to educational context, focuses on learning and engagement",
+      "output": "Optimized data highlighting visitor learning and exhibition effectiveness"
+    },
+    "online_course": {
+      "input": "Course evaluation with completion rates, learning outcomes, satisfaction",
+      "processing": "Identifies educational KPIs, adapts to digital learning context",
+      "output": "Optimized data focusing on learning effectiveness and user experience"
+    },
+    "corporate_event": {
+      "input": "Business event survey with networking, content, logistics feedback",
+      "processing": "Adapts to professional context, identifies business value metrics",
+      "output": "Optimized data highlighting business impact and attendee value"
+    }
+  },
+  "testing_with_your_project": {
+    "step_1": "Place your 3 files (projects Excel, responses Excel, PDF) in data directory",
+    "step_2": "Run: python universal_preprocessor.py",
+    "step_3": "Check universal_optimized_data.json for results",
+    "step_4": "Verify 75-85% size reduction in universal_compatibility_report.json"
+  }
+}
