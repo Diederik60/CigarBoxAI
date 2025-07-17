@@ -1,0 +1,157 @@
+{
+    "project_info": {
+      "name": "Rotterdam Bluegrass Festival 2024",
+      "total_respondents": 614,
+      "data_category": "visit_motivation",
+      "question_stem": "Om welke reden(en) heb je |project| bezocht? (meerdere antwoorden mogelijk)"
+    },
+    "benchmark_data": {
+      "Programma van |project|": {
+        "respondents_who_selected": 351,
+        "respondents_who_did_not_select": 263,
+        "completion_rate": 57.2,
+        "percentage_of_total": 57.2
+      },
+      "Ontspanning": {
+        "respondents_who_selected": 356,
+        "respondents_who_did_not_select": 258,
+        "completion_rate": 58.0,
+        "percentage_of_total": 58.0
+      },
+      "Het opdoen van nieuwe ervaringen (zoals inzichten, kennis, perspectieven)": {
+        "respondents_who_selected": 104,
+        "respondents_who_did_not_select": 510,
+        "completion_rate": 16.9,
+        "percentage_of_total": 16.9
+      },
+      "Om meer te weten te komen over |onderwerp/thema|": {
+        "respondents_who_selected": 65,
+        "respondents_who_did_not_select": 549,
+        "completion_rate": 10.6,
+        "percentage_of_total": 10.6
+      },
+      "Met vrienden / familie tijd doorbrengen": {
+        "respondents_who_selected": 332,
+        "respondents_who_did_not_select": 282,
+        "completion_rate": 54.1,
+        "percentage_of_total": 54.1
+      },
+      "Ik ken iemand uit de organisatie / die op het podium staat": {
+        "respondents_who_selected": 39,
+        "respondents_who_did_not_select": 575,
+        "completion_rate": 6.4,
+        "percentage_of_total": 6.4
+      },
+      "Een leuk dagje / avondje uit": {
+        "respondents_who_selected": 393,
+        "respondents_who_did_not_select": 221,
+        "completion_rate": 64.0,
+        "percentage_of_total": 64.0
+      },
+      "Om de buurt beter te leren kennen": {
+        "respondents_who_selected": 11,
+        "respondents_who_did_not_select": 603,
+        "completion_rate": 1.8,
+        "percentage_of_total": 1.8
+      },
+      "Om Rotterdam beter te leren kennen": {
+        "respondents_who_selected": 24,
+        "respondents_who_did_not_select": 590,
+        "completion_rate": 3.9,
+        "percentage_of_total": 3.9
+      }
+    },
+    "validation_questions": [
+      {
+        "question": "Wat was de belangrijkste reden voor bezoek aan Rotterdam Bluegrass Festival 2024?",
+        "expected_answer_elements": [
+          "Een leuk dagje / avondje uit",
+          "64.0%",
+          "393 respondenten",
+          "n=393"
+        ],
+        "incorrect_if_contains": [
+          "meest populaire",
+          "algemeen",
+          "typisch"
+        ]
+      },
+      {
+        "question": "Hoeveel procent bezocht het festival voor ontspanning?",
+        "expected_answer_elements": [
+          "58.0%",
+          "356 respondenten",
+          "n=356"
+        ],
+        "exact_numbers": {
+          "percentage": 58.0,
+          "respondent_count": 356,
+          "total_respondents": 614
+        }
+      },
+      {
+        "question": "Welk percentage kwam om nieuwe ervaringen op te doen?",
+        "expected_answer_elements": [
+          "16.9%",
+          "104 respondenten",
+          "n=104"
+        ],
+        "exact_numbers": {
+          "percentage": 16.9,
+          "respondent_count": 104,
+          "total_respondents": 614
+        }
+      },
+      {
+        "question": "Hoeveel mensen kenden iemand van de organisatie?",
+        "expected_answer_elements": [
+          "6.4%",
+          "39 respondenten",
+          "n=39"
+        ],
+        "exact_numbers": {
+          "percentage": 6.4,
+          "respondent_count": 39,
+          "total_respondents": 614
+        }
+      },
+      {
+        "question": "Wat waren de top 3 redenen voor bezoek?",
+        "expected_answer_elements": [
+          "Een leuk dagje / avondje uit (64.0%, n=393)",
+          "Ontspanning (58.0%, n=356)", 
+          "Programma van Rotterdam Bluegrass Festival 2024 (57.2%, n=351)"
+        ],
+        "must_include_sample_sizes": true
+      },
+      {
+        "question": "Hoeveel procent wilde meer weten over bluegrass muziek?",
+        "expected_answer_elements": [
+          "10.6%",
+          "65 respondenten",
+          "n=65"
+        ],
+        "exact_numbers": {
+          "percentage": 10.6,
+          "respondent_count": 65,
+          "total_respondents": 614
+        }
+      }
+    ],
+    "validation_criteria": {
+      "must_include": [
+        "sample_size_notation",
+        "project_name_reference",
+        "exact_percentages",
+        "respondent_counts"
+      ],
+      "must_not_include": [
+        "generalizations",
+        "assumptions",
+        "comparisons_to_other_events",
+        "interpretative_language"
+      ],
+      "accuracy_threshold": 100,
+      "required_precision": "one_decimal_place"
+    }
+  }

@@ -35,6 +35,12 @@ class UniversalCigarBoxPreprocessor:
         self.pdf_file = self._find_pdf_file()
         
         self._log_files_found()
+    
+    def _round_numeric(self, value: float) -> float:
+        """Round numeric values to 1 decimal place"""
+        if value is None or not isinstance(value, (int, float)):
+            return value
+        return round(float(value), 1)
         
     def _find_projects_file(self) -> Optional[Path]:
         """Find aggregated projects Excel file"""
@@ -157,7 +163,7 @@ class UniversalCigarBoxPreprocessor:
                     if pd.notna(value):
                         # Convert to appropriate type while preserving info
                         if isinstance(value, (int, float)):
-                            row_data[col] = value
+                            row_data[col] = self._round_numeric(value)
                         else:
                             row_data[col] = str(value)
                     else:
@@ -207,20 +213,20 @@ class UniversalCigarBoxPreprocessor:
                     "non_null_count": int(df[col].count()),
                     "null_count": int(df[col].isnull().sum()),
                     "unique_values": int(df[col].nunique()),
-                    "completion_rate": float(df[col].count() / len(df) * 100)
+                    "completion_rate": self._round_numeric(df[col].count() / len(df) * 100)
                 }
                 
                 # Statistical analysis for numeric columns
                 if pd.api.types.is_numeric_dtype(df[col]):
                     stats = df[col].describe()
                     column_info["statistics"] = {
-                        "mean": float(stats['mean']) if 'mean' in stats else None,
-                        "median": float(df[col].median()) if df[col].count() > 0 else None,
-                        "std": float(stats['std']) if 'std' in stats else None,
-                        "min": float(stats['min']) if 'min' in stats else None,
-                        "max": float(stats['max']) if 'max' in stats else None,
-                        "q25": float(stats['25%']) if '25%' in stats else None,
-                        "q75": float(stats['75%']) if '75%' in stats else None
+                        "mean": self._round_numeric(stats['mean']) if 'mean' in stats else None,
+                        "median": self._round_numeric(df[col].median()) if df[col].count() > 0 else None,
+                        "std": self._round_numeric(stats['std']) if 'std' in stats else None,
+                        "min": self._round_numeric(stats['min']) if 'min' in stats else None,
+                        "max": self._round_numeric(stats['max']) if 'max' in stats else None,
+                        "q25": self._round_numeric(stats['25%']) if '25%' in stats else None,
+                        "q75": self._round_numeric(stats['75%']) if '75%' in stats else None
                     }
                 
                 # Categorical analysis
@@ -230,7 +236,7 @@ class UniversalCigarBoxPreprocessor:
                         str(k): int(v) for k, v in value_counts.items()
                     }
                     column_info["value_percentages"] = {
-                        str(k): float(v / len(df) * 100) for k, v in value_counts.items()
+                        str(k): self._round_numeric(v / len(df) * 100) for k, v in value_counts.items()
                     }
                 
                 processed_data["column_analysis"][col] = column_info
@@ -242,7 +248,10 @@ class UniversalCigarBoxPreprocessor:
                 for col in df.columns:
                     value = df.iloc[idx][col]
                     if pd.notna(value):
-                        row_data[col] = value if isinstance(value, (int, float)) else str(value)
+                        if isinstance(value, (int, float)):
+                            row_data[col] = self._round_numeric(value)
+                        else:
+                            row_data[col] = str(value)
                     else:
                         row_data[col] = None
                 sample_data.append(row_data)
@@ -265,7 +274,7 @@ class UniversalCigarBoxPreprocessor:
             "content_structure": {
                 "total_pages": pdf_data["total_pages"],
                 "total_length": pdf_data["total_length"],
-                "average_page_length": pdf_data["total_length"] / pdf_data["total_pages"] if pdf_data["total_pages"] > 0 else 0
+                "average_page_length": self._round_numeric(pdf_data["total_length"] / pdf_data["total_pages"]) if pdf_data["total_pages"] > 0 else 0
             },
             "extracted_metrics": {
                 "percentages": [],
@@ -280,7 +289,7 @@ class UniversalCigarBoxPreprocessor:
         
         # Extract percentages
         percentages = re.findall(r'(\d+(?:\.\d+)?)\s*%', full_text)
-        analysis["extracted_metrics"]["percentages"] = [float(p) for p in percentages]
+        analysis["extracted_metrics"]["percentages"] = [self._round_numeric(float(p)) for p in percentages]
         
         # Extract numbers
         numbers = re.findall(r'\b(\d{1,3}(?:\.\d{3})*(?:,\d+)?)\b', full_text)
@@ -451,7 +460,7 @@ class UniversalCigarBoxPreprocessor:
                 "pdf_insights": len(all_data.get("pdf_analysis", {}).get("identified_sections", []))
             },
             "data_quality_assessment": {
-                "completeness_score": self._calculate_completeness_score(all_data),
+                "completeness_score": self._round_numeric(self._calculate_completeness_score(all_data)),
                 "total_data_points": self._count_total_data_points(all_data),
                 "processing_timestamp": datetime.now().isoformat(),
                 "data_consistency": "Single project focus - responses and PDF match project data"
@@ -563,7 +572,8 @@ class UniversalCigarBoxPreprocessor:
                 "Gebruik 'column_analysis' voor gedetailleerde statistieken",
                 "Gebruik 'raw_sample' voor context van individuele responses",
                 "Gebruik 'pdf_content' voor volledige factsheet informatie",
-                "Verwijs altijd naar 'llm_context' voor project overzicht"
+                "Verwijs altijd naar 'llm_context' voor project overzicht",
+                "Alle berekende waarden zijn afgerond op 1 decimaal voor leesbaarheid"
             ],
             
             "data_access_patterns": {
@@ -588,7 +598,8 @@ class UniversalCigarBoxPreprocessor:
                 "total_data_points": data.get("llm_context", {}).get("data_quality_assessment", {}).get("total_data_points", 0),
                 "files_processed": data.get("processing_metadata", {}).get("files_processed", {}),
                 "processing_timestamp": datetime.now().isoformat(),
-                "data_preservation": "Complete - no information lost"
+                "data_preservation": "Complete - no information lost",
+                "rounding_applied": "All calculated values rounded to 1 decimal place"
             },
             "file_outputs": {
                 "comprehensive_data": "comprehensive_survey_data.json",
@@ -668,6 +679,7 @@ class UniversalCigarBoxPreprocessor:
         print(f"Data guide: data_structure_guide.json") 
         print(f"Summary report: processing_report.json")
         print(f"Data preservation: Complete - no information lost")
+        print(f"Rounding applied: All calculated values rounded to 1 decimal place")
 
 
 def main():
@@ -685,7 +697,7 @@ def main():
     print(f"Output directory: {output_dir}")
     if data_dir.startswith('C:\\'):
         data_dir = data_dir.replace('C:\\', '/mnt/c/').replace('\\', '/')
-        output_dir = str(Path(data_dir) / "results")
+        output_dir = str(Path(data_dir) / "prepared_data")
         print(f"Converted to WSL path: {data_dir}")
     if not os.path.exists(data_dir):
         print(f"ERROR: Data directory '{data_dir}' does not exist!")
@@ -697,6 +709,7 @@ def main():
         print("\nUniversal preprocessing successful!")
         print("Ready for any LLM API (Google Gemini, OpenAI, etc.)")
         print("All original data preserved and structured")
+        print("Statistical values cleaned with 1-decimal rounding")
     except Exception as e:
         print(f"ERROR: {e}")
         import traceback
